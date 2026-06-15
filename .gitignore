@@ -1,2 +1,2 @@
-/.gitignore
-!.gitignore
+/.idea
+/node_modules
