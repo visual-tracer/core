@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="7197f7a0-a940-4295-a985-41625a123422" name="Changes" comment="Initialize project with `package.json` and update README title">
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="CopilotPersistence">
+    <persistenceIdMap>
+      <entry key="_/Users/nima/Documents/Package/visual-tracer/core" value="3FAeHiedW5gedwDccNURYOruuyU" />
+    </persistenceIdMap>
+  </component>
+  <component name="EmbeddingIndexingInfo">
+    <option name="cachedIndexableFilesCount" value="2" />
+    <option name="fileBasedEmbeddingIndicesEnabled" value="true" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;aboutnima&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;git@github.com:visual-tracer/core.git&quot;,
+    &quot;accountId&quot;: &quot;f5de33d7-e0cf-4428-b659-7204080ff377&quot;
+  }
+}</component>
+  <component name="McpProjectServerCommands">
+    <commands />
+    <urls />
+  </component>
+  <component name="NextEditCompletionFeaturesState">
+    <decayedCancelled>
+      <entry key="MS100" value="1.600106708855281" />
+      <entry key="MS500" value="3.116694676751236" />
+      <entry key="S2" value="3.7456523469438237" />
+      <entry key="S5" value="3.910757158848222" />
+      <entry key="S10" value="4.276836225682251" />
+      <entry key="S30" value="6.510288878855462" />
+      <entry key="S60" value="8.21632731968434" />
+      <entry key="M2" value="9.93438897107697" />
+      <entry key="M5" value="16.10581289034051" />
+      <entry key="M10" value="25.608542400518004" />
+      <entry key="M15" value="31.6717417106789" />
+      <entry key="M30" value="40.375720716782645" />
+      <entry key="H1" value="46.09525985872635" />
+      <entry key="H2" value="49.38416816597144" />
+      <entry key="H4" value="51.14912190563828" />
+      <entry key="D1" value="52.68536612694839" />
+      <entry key="W1" value="52.95489908256058" />
+    </decayedCancelled>
+    <decayedSelected>
+      <entry key="MS100" value="0.0" />
+      <entry key="MS500" value="9.002045023425892E-219" />
+      <entry key="S2" value="3.0802452404423093E-55" />
+      <entry key="S5" value="1.5683195779055177E-22" />
+      <entry key="S10" value="1.253593937960058E-11" />
+      <entry key="S30" value="2.5554765151300615E-4" />
+      <entry key="S60" value="0.02006842765475564" />
+      <entry key="M2" value="0.19308174870641384" />
+      <entry key="M5" value="0.8061035375507957" />
+      <entry key="M10" value="1.4145492344984605" />
+      <entry key="M15" value="1.76400609858602" />
+      <entry key="M30" value="2.26068759426703" />
+      <entry key="H1" value="2.591723366348" />
+      <entry key="H2" value="2.784894349629646" />
+      <entry key="H4" value="2.889520069490074" />
+      <entry key="D1" value="2.9811633060226894" />
+      <entry key="W1" value="2.9972984480913816" />
+    </decayedSelected>
+    <decayedShown>
+      <entry key="MS100" value="1.5616810926789568" />
+      <entry key="MS500" value="3.101848039565753" />
+      <entry key="S2" value="3.7411335681871005" />
+      <entry key="S5" value="3.9088637834996787" />
+      <entry key="S10" value="4.275798348505053" />
+      <entry key="S30" value="6.510009430695872" />
+      <entry key="S60" value="8.235815683353133" />
+      <entry key="M2" value="10.125679394554593" />
+      <entry key="M5" value="16.907947271647895" />
+      <entry key="M10" value="27.018907555304164" />
+      <entry key="M15" value="33.432052101920114" />
+      <entry key="M30" value="42.63391261745591" />
+      <entry key="H1" value="48.6855219639502" />
+      <entry key="H2" value="52.16827032175052" />
+      <entry key="H4" value="54.03822932385134" />
+      <entry key="D1" value="55.6664582526365" />
+      <entry key="W1" value="55.952187301699816" />
+    </decayedShown>
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 7,
+  &quot;fromUser&quot;: false
+}</component>
+  <component name="ProjectId" id="3FAeHiedW5gedwDccNURYOruuyU" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.MCP Project settings loaded&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
+    &quot;codeWithMe.voiceChat.enabledByDefault&quot;: &quot;false&quot;,
+    &quot;com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;javascript.preferred.runtime.type.id&quot;: &quot;node&quot;,
+    &quot;junie.onboarding.icon.badge.shown&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/Users/nima/Documents/Package/visual-tracer/core&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.sourceCode.JSON&quot;,
+    &quot;to.speed.mode.migration.done&quot;: &quot;true&quot;,
+    &quot;ts.external.directory.path&quot;: &quot;/Users/nima/Documents/Package/visual-tracer/core/node_modules/typescript/lib&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  }
+}</component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-js-predefined-d6986cc7102b-31caf2ab9e3c-JavaScript-WS-261.25134.101" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="7197f7a0-a940-4295-a985-41625a123422" name="Changes" comment="" />
+      <created>1781522214370</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1781522214370</updated>
+      <workItem from="1781522215379" duration="1965000" />
+    </task>
+    <task id="LOCAL-00001" summary="Initialize project with `package.json` and update README title">
+      <option name="closed" value="true" />
+      <created>1781522679099</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1781522679099</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Initialize project with IntelliJ IDEA configuration files, `package.json`, and updated `README.md`." />
+    <MESSAGE value="Initialize project with `package.json` and update README title" />
+    <option name="LAST_COMMIT_MESSAGE" value="Initialize project with `package.json` and update README title" />
+  </component>
+  <component name="XSLT-Support.FileAssociations.UIState">
+    <expand />
+    <select />
+  </component>
+</project>
