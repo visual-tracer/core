@@ -1,8 +1,47 @@
 import * as singleFile from 'single-file-core/single-file.js';
-import type { SendOptions, SingleFilePageData } from './types/index.js';
+import type { SingleFilePageData } from './types/index.js';
 
 export class VisualTracer {
-    async html(): Promise<string> {
+    private captureToken: string = '';
+    private endpoint: string = 'https://api.visualtracer.com/v1/capture';
+
+    init(
+        captureToken: string,
+        endpoint?: string
+    ): void {
+        this.captureToken = captureToken;
+
+        if (endpoint) {
+            this.endpoint = endpoint;
+        }
+    }
+
+    async send(
+        sendConsole: boolean = false
+    ): Promise<void> {
+        if (!this.captureToken) {
+            throw new Error('VisualTracer is not initialized. Please call init() with a valid capture token.');
+        }
+
+        const response = await fetch(this.endpoint, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                Accept: 'application/json',
+                'X-Capture-Token': this.captureToken,
+            },
+            body: JSON.stringify({
+                html: await this.html(),
+                console: sendConsole ? this.getConsoleData() : false,
+            })
+        })
+
+        if (!response.ok) {
+            throw new Error(`VisualTracer request failed with status ${response.status}`);
+        }
+    }
+
+    private async html(): Promise<string> {
         this.assertBrowserEnvironment();
 
         const page = (await singleFile.getPageData({
@@ -17,23 +56,6 @@ export class VisualTracer {
 
         return this.fixViteStyles(page.content);
     }
-
-    async send(
-        sendConsole: boolean = false
-    ): Promise<void> {
-        const response = await fetch('http://localhost/api/screenshot', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                Accept: 'application/json',
-            },
-            body: JSON.stringify({
-                html: await this.html(),
-                console: sendConsole ? this.getConsoleData() : false,
-            })
-        })
-    }
-
 
     private getConsoleData(): unknown[] {
         return [];
