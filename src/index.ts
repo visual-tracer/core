@@ -1,5 +1,5 @@
 import * as singleFile                                                   from 'single-file-core/single-file.js';
-import type { SingleFilePageData, ScrollElementState, VisualTracerMeta } from './types/index.js';
+import type { SingleFilePageData, ScrollElementState, VisualTracerMeta, VisualTracerRestoreState } from './types/index.js';
 
 export class VisualTracer {
     private captureToken: string = '';
@@ -24,6 +24,12 @@ export class VisualTracer {
         }
 
         const meta = this.getMeta();
+        const scrollElements = this.getScrollableElementsState();
+
+        const restoreState: VisualTracerRestoreState = {
+            ...meta,
+            scrollElements,
+        };
 
         const response = await fetch(this.endpoint, {
             method: 'POST',
@@ -33,7 +39,7 @@ export class VisualTracer {
                 'X-Capture-Token': this.captureToken,
             },
             body: JSON.stringify({
-                html: await this.html(meta),
+                html: await this.html(restoreState),
                 console: sendConsole ? this.getConsoleData() : false,
                 meta,
             }),

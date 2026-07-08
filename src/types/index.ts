@@ -33,3 +33,7 @@ export type VisualTracerMeta = {
         referrer: string;
     };
 };
+
+export type VisualTracerRestoreState = VisualTracerMeta & {
+    scrollElements: ScrollElementState[];
+};
