@@ -1,5 +1,5 @@
-import * as singleFile from 'single-file-core/single-file.js';
-import type { SingleFilePageData } from './types/index.js';
+import * as singleFile                                                   from 'single-file-core/single-file.js';
+import type { SingleFilePageData, ScrollElementState, VisualTracerMeta } from './types/index.js';
 
 export class VisualTracer {
     private captureToken: string = '';
@@ -23,6 +23,8 @@ export class VisualTracer {
             throw new Error('VisualTracer is not initialized. Please call init() with a valid capture token.');
         }
 
+        const meta = this.getMeta();
+
         const response = await fetch(this.endpoint, {
             method: 'POST',
             headers: {
@@ -31,37 +33,18 @@ export class VisualTracer {
                 'X-Capture-Token': this.captureToken,
             },
             body: JSON.stringify({
-                html: await this.html(),
+                html: await this.html(meta),
                 console: sendConsole ? this.getConsoleData() : false,
-                meta: {
-                    browser: {
-                        url: window.location.href,
-                        userAgent: navigator.userAgent,
-                        language: navigator.language,
-                    },
-                    viewport: {
-                        width: window.innerWidth,
-                        height: window.innerHeight,
-                        dpr: window.devicePixelRatio,
-                    },
-                    scroll: {
-                        x: window.scrollX,
-                        y: window.scrollY,
-                    },
-                    page: {
-                        title: document.title,
-                        referrer: document.referrer,
-                    },
-                }
-            })
-        })
+                meta,
+            }),
+        });
 
         if (!response.ok) {
             throw new Error(`VisualTracer request failed with status ${response.status}`);
         }
     }
 
-    private async html(): Promise<string> {
+    private async html(meta: VisualTracerMeta): Promise<string> {
         this.assertBrowserEnvironment();
 
         const page = (await singleFile.getPageData({
@@ -74,7 +57,117 @@ export class VisualTracer {
             keepPrintStyleSheets: true,
         })) as SingleFilePageData;
 
-        return this.fixViteStyles(page.content);
+        const html = this.fixViteStyles(page.content);
+
+        return this.injectRestoreScript(html, meta);
+    }
+
+    private getMeta(): VisualTracerMeta {
+        return {
+            browser: {
+                url: window.location.href,
+                userAgent: navigator.userAgent,
+                language: navigator.language,
+            },
+            viewport: {
+                width: window.innerWidth,
+                height: window.innerHeight,
+                dpr: window.devicePixelRatio,
+            },
+            scroll: {
+                x: window.scrollX,
+                y: window.scrollY,
+            },
+            scrollElements: this.getScrollableElementsState(),
+            page: {
+                title: document.title,
+                referrer: document.referrer,
+            },
+        };
+    }
+
+    private getScrollableElementsState(): ScrollElementState[] {
+        const states: ScrollElementState[] = [];
+        let index = 0;
+
+        for (const element of Array.from(document.querySelectorAll<HTMLElement>('*'))) {
+            if (!this.isScrollableElement(element)) {
+                continue;
+            }
+
+            if (element.scrollTop === 0 && element.scrollLeft === 0) {
+                continue;
+            }
+
+            const id = `vt-scroll-${index++}`;
+
+            element.setAttribute('data-vt-scroll-id', id);
+
+            states.push({
+                id,
+                top: element.scrollTop,
+                left: element.scrollLeft,
+            });
+        }
+
+        return states;
+    }
+
+    private isScrollableElement(element: HTMLElement): boolean {
+        const style = window.getComputedStyle(element);
+
+        const scrollableY = ['auto', 'scroll', 'overlay'].includes(style.overflowY);
+        const scrollableX = ['auto', 'scroll', 'overlay'].includes(style.overflowX);
+
+        return (
+            (scrollableY && element.scrollHeight > element.clientHeight) ||
+            (scrollableX && element.scrollWidth > element.clientWidth)
+        );
+    }
+
+    private injectRestoreScript(html: string, meta: VisualTracerMeta): string {
+        const doc = new DOMParser().parseFromString(html, 'text/html');
+
+        const script = doc.createElement('script');
+
+        script.setAttribute('data-visual-tracer-restore', 'true');
+
+        script.textContent = `
+            (() => {
+                const state = ${JSON.stringify(meta)};
+
+                const restore = () => {
+                    for (const item of state.scrollElements || []) {
+                        const element = document.querySelector('[data-vt-scroll-id="' + item.id + '"]');
+
+                        if (!element) {
+                            continue;
+                        }
+
+                        element.scrollTop = item.top || 0;
+                        element.scrollLeft = item.left || 0;
+                    }
+
+                    window.scrollTo(
+                        state.scroll?.x || 0,
+                        state.scroll?.y || 0
+                    );
+
+                    document.documentElement.setAttribute('data-visual-tracer-restored', 'true');
+                };
+
+                if (document.readyState === 'loading') {
+                    document.addEventListener('DOMContentLoaded', restore, { once: true });
+                    return;
+                }
+
+                restore();
+            })();
+        `;
+
+        doc.body.appendChild(script);
+
+        return `<!DOCTYPE html>\n${doc.documentElement.outerHTML}`;
     }
 
     private getConsoleData(): unknown[] {
