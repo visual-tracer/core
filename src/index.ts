@@ -33,6 +33,26 @@ export class VisualTracer {
             body: JSON.stringify({
                 html: await this.html(),
                 console: sendConsole ? this.getConsoleData() : false,
+                meta: {
+                    browser: {
+                        url: window.location.href,
+                        userAgent: navigator.userAgent,
+                        language: navigator.language,
+                    },
+                    viewport: {
+                        width: window.innerWidth,
+                        height: window.innerHeight,
+                        dpr: window.devicePixelRatio,
+                    },
+                    scroll: {
+                        x: window.scrollX,
+                        y: window.scrollY,
+                    },
+                    page: {
+                        title: document.title,
+                        referrer: document.referrer,
+                    },
+                }
             })
         })
 
