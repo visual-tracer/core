@@ -17,7 +17,8 @@ export class VisualTracer {
     }
 
     async send(
-        sendConsole: boolean = false
+        sendConsole: boolean = false,
+        payload: object = {}
     ): Promise<void> {
         if (!this.captureToken) {
             throw new Error('VisualTracer is not initialized. Please call init() with a valid capture token.');
@@ -42,6 +43,7 @@ export class VisualTracer {
                 html: await this.html(restoreState),
                 console: sendConsole ? this.getConsoleData() : false,
                 meta,
+                payload,
             }),
         });
 
