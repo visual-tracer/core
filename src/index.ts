@@ -32,29 +32,19 @@ export class VisualTracer {
             scrollElements,
         };
 
-        const body = JSON.stringify({
-            html: await this.html(restoreState),
-            console: sendConsole ? this.getConsoleData() : false,
-            meta,
-            payload,
-        });
-
-        const headers: Record<string, string> = {
-            'Content-Type': 'application/json',
-            Accept: 'application/json',
-            'X-Capture-Token': this.captureToken,
-        };
-
-        const compressed = await this.compress(body);
-
-        if (compressed) {
-            headers['Content-Encoding'] = 'gzip';
-        }
-
         const response = await fetch(this.endpoint, {
             method: 'POST',
-            headers,
-            body: compressed ?? body,
+            headers: {
+                'Content-Type': 'application/json',
+                Accept: 'application/json',
+                'X-Capture-Token': this.captureToken,
+            },
+            body: JSON.stringify({
+                html: await this.html(restoreState),
+                console: sendConsole ? this.getConsoleData() : false,
+                meta,
+                payload,
+            }),
         });
 
         if (!response.ok) {
@@ -62,33 +52,16 @@ export class VisualTracer {
         }
     }
 
-    private async compress(body: string): Promise<Blob | null> {
-        if (typeof CompressionStream === 'undefined') {
-            return null;
-        }
-
-        try {
-            const stream = new Blob([body])
-                .stream()
-                .pipeThrough(new CompressionStream('gzip'));
-
-            return await new Response(stream).blob();
-        } catch {
-            return null;
-        }
-    }
-
     private async html(meta: VisualTracerMeta): Promise<string> {
         this.assertBrowserEnvironment();
 
         const page = (await singleFile.getPageData({
-            removeHiddenElements: false,
-            removeUnusedStyles: false,
-            removeUnusedFonts: false,
-            blockScripts: true,
-            blockStylesheets: false,
             compressHTML: true,
-            keepPrintStyleSheets: true,
+            compressCSS: true,
+            removeUnusedStyles: true,
+            removeUnusedFonts: true,
+            removeScripts: false,
+            removeHiddenElements: false,
         })) as SingleFilePageData;
 
         const html = this.fixViteStyles(page.content);
