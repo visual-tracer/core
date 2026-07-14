@@ -31,8 +31,5 @@
     },
     "devDependencies": {
         "typescript": "^6.0.3"
-    },
-    "dependencies": {
-        "single-file-core": "^1.5.84"
     }
 }
