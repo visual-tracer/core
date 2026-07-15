@@ -42,3 +42,22 @@ export function isElementVisible(element: HTMLElement): boolean {
         rect.left < window.innerWidth
     );
 }
+
+export async function compressImage(blob: Blob): Promise<Blob> {
+    const bitmap = await createImageBitmap(blob);
+    const canvas = document.createElement('canvas');
+
+    canvas.width = bitmap.width;
+    canvas.height = bitmap.height;
+
+    canvas.getContext('2d')!.drawImage(bitmap, 0, 0);
+    bitmap.close();
+
+    return new Promise((resolve, reject) => {
+        canvas.toBlob(
+            result => result ? resolve(result) : reject(),
+            'image/webp',
+            0.75,
+        );
+    });
+}

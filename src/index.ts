@@ -1,40 +1,16 @@
-import { isElementVisible, resolveCssUrls, toDataUrl } from "./lib.js";
+import { compressImage, isElementVisible, resolveCssUrls, toDataUrl } from "./lib.js";
 
 export default class VisualTracer {
     public async capture() {
         const clonedHtml = document.documentElement.cloneNode(true) as HTMLElement;
 
-        this.removeBelowViewport(clonedHtml);
+        clonedHtml.querySelectorAll('script').forEach(script => script.remove());
+
         await this.inlineStyles(clonedHtml);
         await this.embedFonts(clonedHtml);
         await this.embedImages(clonedHtml);
-    }
 
-    private removeBelowViewport(clonedHtml: HTMLElement) {
-        const originals = Array.from(document.body.querySelectorAll<HTMLElement>('*'));
-        const clones = Array.from(clonedHtml.querySelectorAll<HTMLElement>('body *'));
-        const keep = new Set<Element>();
-
-        for (const element of originals) {
-            const rect = element.getBoundingClientRect();
-
-            if (rect.bottom > 0 && rect.top < window.innerHeight) {
-                let current: Element | null = element;
-
-                while (current) {
-                    keep.add(current);
-                    current = current.parentElement;
-                }
-            }
-        }
-
-        originals.forEach((element, index) => {
-            const rect = element.getBoundingClientRect();
-
-            if (rect.top >= window.innerHeight && !keep.has(element)) {
-                clones[index]?.remove();
-            }
-        });
+        console.log(clonedHtml)
     }
 
     private async inlineStyles(clonedHtml: HTMLElement) {
@@ -110,7 +86,11 @@ export default class VisualTracer {
 
             try {
                 const response = await fetch(image.currentSrc || image.src);
-                const blob = await response.blob();
+                let blob = await response.blob();
+
+                if (blob.size > maxSize) {
+                    blob = await compressImage(blob);
+                }
 
                 if (blob.size > maxSize) {
                     clonedImage.src = placeholder;
