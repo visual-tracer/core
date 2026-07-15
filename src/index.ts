@@ -35,21 +35,32 @@ export default class VisualTracer {
         const originalImages = Array.from(document.querySelectorAll('img'));
         const clonedImages = Array.from(clonedHtml.querySelectorAll('img'));
 
+        const placeholder =
+            'data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=';
+
         for (let index = 0; index < originalImages.length; index++) {
             const image = originalImages[index];
             const clonedImage = clonedImages[index];
 
-            if (!image || !clonedImage || !isElementVisible(image)) {
+            if (!image || !clonedImage) {
+                continue;
+            }
+
+            clonedImage.removeAttribute('srcset');
+            clonedImage.removeAttribute('sizes');
+
+            if (!isElementVisible(image)) {
+                clonedImage.src = placeholder;
                 continue;
             }
 
             try {
                 const response = await fetch(image.currentSrc || image.src);
                 const blob = await response.blob();
+
                 clonedImage.src = await toDataUrl(blob);
-                clonedImage.removeAttribute('srcset');
             } catch {
-                console.warn('Could not embed image:', image.src);
+                clonedImage.src = placeholder;
             }
         }
     }
