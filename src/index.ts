@@ -1,4 +1,4 @@
-import { compressImage, isElementVisible, resolveCssUrls, toDataUrl } from "./lib.js";
+import { reduceImageSize, isElementVisible, resolveCssUrls, toDataUrl } from "./lib.js";
 
 export default class VisualTracer {
     public async capture() {
@@ -7,7 +7,7 @@ export default class VisualTracer {
         clonedHtml.querySelectorAll('script').forEach(script => script.remove());
 
         await this.inlineStyles(clonedHtml);
-        await this.embedFonts(clonedHtml);
+        // await this.embedFonts(clonedHtml);
         await this.embedImages(clonedHtml);
 
         console.log(clonedHtml)
@@ -63,7 +63,7 @@ export default class VisualTracer {
         style.textContent = css;
     }
 
-    private async embedImages(clonedHtml: HTMLElement, maxSize: number = 2.5 * 1024 * 1024) {
+    private async embedImages(clonedHtml: HTMLElement, maxSize: number = 0.5 * 1024 * 1024) {
         const originalImages = Array.from(document.querySelectorAll('img'));
         const clonedImages = Array.from(clonedHtml.querySelectorAll('img'));
 
@@ -89,7 +89,7 @@ export default class VisualTracer {
                 let blob = await response.blob();
 
                 if (blob.size > maxSize) {
-                    blob = await compressImage(blob);
+                    blob = await reduceImageSize(blob);
                 }
 
                 if (blob.size > maxSize) {
