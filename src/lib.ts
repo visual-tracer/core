@@ -15,30 +15,6 @@ export function resolveCssUrls(cssText: string, base: string): string {
     );
 }
 
-export async function embedFonts(css: string): Promise<string> {
-    const urls = [...css.matchAll(/url\(["']?(.*?\.(?:woff2?|ttf|otf))["']?\)/gi)];
-
-    for (const match of urls) {
-        const url = match[1];
-
-        if (!url) {
-            continue;
-        }
-
-        try {
-            const response = await fetch(url);
-            const blob = await response.blob();
-            const dataUrl = await toDataUrl(blob);
-
-            css = css.replaceAll(url, dataUrl);
-        } catch {
-            console.warn('Could not embed font:', url);
-        }
-    }
-
-    return css;
-}
-
 export function toDataUrl(blob: Blob): Promise<string> {
     return new Promise((resolve, reject) => {
         const reader = new FileReader();

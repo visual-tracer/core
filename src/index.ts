@@ -1,13 +1,14 @@
-import { embedFonts, isElementVisible, resolveCssUrls, toDataUrl } from "./lib.js";
+import { isElementVisible, resolveCssUrls, toDataUrl } from "./lib.js";
 
 export default class VisualTracer {
     public async capture() {
         const clonedHtml = document.documentElement.cloneNode(true) as HTMLElement;
 
         await this.inlineStyles(clonedHtml);
+        await this.embedFonts(clonedHtml);
         await this.embedImages(clonedHtml);
 
-        console.log(clonedHtml);
+        console.log(clonedHtml)
     }
 
     private async inlineStyles(clonedHtml: HTMLElement) {
@@ -26,9 +27,38 @@ export default class VisualTracer {
         }
 
         const style = document.createElement('style');
-        style.textContent = await embedFonts(css.join('\n'));
+        style.dataset.visualTracer = 'styles';
+        style.textContent = css.join('\n');
 
         clonedHtml.querySelector('head')?.appendChild(style);
+    }
+
+    private async embedFonts(clonedHtml: HTMLElement) {
+        const style = clonedHtml.querySelector<HTMLStyleElement>(
+            'style[data-visual-tracer="styles"]',
+        );
+
+        if (!style?.textContent) return;
+
+        let css = style.textContent;
+        const urls = [...new Set(
+            [...css.matchAll(/url\(\s*['"]?([^'")]+)['"]?\s*\)/gi)]
+                .map(match => match[1])
+                .filter(url => /\.(woff2?|ttf|otf)([?#].*)?$/i.test(url)),
+        )];
+
+        for (const url of urls) {
+            try {
+                const response = await fetch(url);
+                if (!response.ok) throw new Error();
+
+                css = css.replaceAll(url, await toDataUrl(await response.blob()));
+            } catch {
+                console.warn('Could not embed font:', url);
+            }
+        }
+
+        style.textContent = css;
     }
 
     private async embedImages(clonedHtml: HTMLElement) {
