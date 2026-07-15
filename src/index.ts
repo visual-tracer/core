@@ -4,11 +4,37 @@ export default class VisualTracer {
     public async capture() {
         const clonedHtml = document.documentElement.cloneNode(true) as HTMLElement;
 
+        this.removeBelowViewport(clonedHtml);
         await this.inlineStyles(clonedHtml);
         await this.embedFonts(clonedHtml);
         await this.embedImages(clonedHtml);
+    }
 
-        console.log(clonedHtml)
+    private removeBelowViewport(clonedHtml: HTMLElement) {
+        const originals = Array.from(document.body.querySelectorAll<HTMLElement>('*'));
+        const clones = Array.from(clonedHtml.querySelectorAll<HTMLElement>('body *'));
+        const keep = new Set<Element>();
+
+        for (const element of originals) {
+            const rect = element.getBoundingClientRect();
+
+            if (rect.bottom > 0 && rect.top < window.innerHeight) {
+                let current: Element | null = element;
+
+                while (current) {
+                    keep.add(current);
+                    current = current.parentElement;
+                }
+            }
+        }
+
+        originals.forEach((element, index) => {
+            const rect = element.getBoundingClientRect();
+
+            if (rect.top >= window.innerHeight && !keep.has(element)) {
+                clones[index]?.remove();
+            }
+        });
     }
 
     private async inlineStyles(clonedHtml: HTMLElement) {
@@ -44,7 +70,7 @@ export default class VisualTracer {
         const urls = [...new Set(
             [...css.matchAll(/url\(\s*['"]?([^'")]+)['"]?\s*\)/gi)]
                 .map(match => match[1])
-                .filter(url => /\.(woff2?|ttf|otf)([?#].*)?$/i.test(url)),
+                .filter((url): url is string => !!url && /\.(woff2?|ttf|otf)([?#].*)?$/i.test(url)),
         )];
 
         for (const url of urls) {
@@ -61,7 +87,7 @@ export default class VisualTracer {
         style.textContent = css;
     }
 
-    private async embedImages(clonedHtml: HTMLElement) {
+    private async embedImages(clonedHtml: HTMLElement, maxSize: number = 2.5 * 1024 * 1024) {
         const originalImages = Array.from(document.querySelectorAll('img'));
         const clonedImages = Array.from(clonedHtml.querySelectorAll('img'));
 
@@ -72,9 +98,7 @@ export default class VisualTracer {
             const image = originalImages[index];
             const clonedImage = clonedImages[index];
 
-            if (!image || !clonedImage) {
-                continue;
-            }
+            if (!image || !clonedImage) continue;
 
             clonedImage.removeAttribute('srcset');
             clonedImage.removeAttribute('sizes');
@@ -87,6 +111,11 @@ export default class VisualTracer {
             try {
                 const response = await fetch(image.currentSrc || image.src);
                 const blob = await response.blob();
+
+                if (blob.size > maxSize) {
+                    clonedImage.src = placeholder;
+                    continue;
+                }
 
                 clonedImage.src = await toDataUrl(blob);
             } catch {
