@@ -7,19 +7,19 @@ async function capture(options: captureOptions): Promise<string> {
     clonedHtml.querySelectorAll('script').forEach(script => script.remove());
 
     if (options?.inlineStyles) {
-    await inlineStyles(clonedHtml);
+        await inlineStyles(clonedHtml);
     }
     if (options?.embedFonts) {
-    await embedFonts(clonedHtml);
+        await embedFonts(clonedHtml);
     }
     if (options?.embedImages) {
-    await embedImages(clonedHtml);
+        await embedImages(clonedHtml);
     }
 
     return `<!DOCTYPE html>${clonedHtml.outerHTML}`;
 }
 
-function pageMeta (): PageMeta {
+function pageMeta(): PageMeta {
     return {
         browser: {
             url: window.location.href,
@@ -135,7 +135,9 @@ async function embedImages(clonedHtml: HTMLElement, maxSize: number = 0.5 * 1024
 
 async function send(options: sendOptions): Promise<Response> {
     const capturedHtml = await capture({
-        embedFonts: false
+        inlineStyles: true,
+        embedFonts: false,
+        embedImages: true,
     });
     const meta = pageMeta();
 
